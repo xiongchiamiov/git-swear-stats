@@ -33,7 +33,9 @@ repo = Git.open '.'
 print 'Reading in git log... '
 log = repo.log nil
 puts 'done!'
-log.each do |commit|
+
+print 'Parsing commit messages'
+log.each_with_index do |commit, i|
    author = commit.author.name
    if not authorStats.key? author
       authorStats[author] = {}
@@ -48,7 +50,7 @@ log.each do |commit|
          end
       end
    end
-   print '.'
+   print '.' if i % 100 == 0
 end
 
 puts
