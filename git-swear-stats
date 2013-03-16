@@ -5,8 +5,30 @@
 # May you share freely, never taking more than you give.
 # May you find love and love everyone you find.
 
+require 'docopt'
 require 'git'
 require 'pp'
+
+# Git intercepts `git swear-stats --help`, so unfortunately most people won't
+# see this usage message.  Docopt is still a great way to do parsing, though.
+doc = <<DOCOPT
+git-swear-stats
+
+Usage:
+   git-swear-stats [options]
+
+Options:
+   -h, --help  Show this screen.
+   --debug     Print out debug messages.
+
+DOCOPT
+begin
+   options = Docopt::docopt doc
+rescue Docopt::Exit => e
+   puts e.message
+   exit 1
+end
+pp options if options['--debug']
 
 swears = [
    %r{^(dip)?shit(ty)?$},
@@ -49,6 +71,12 @@ log.each_with_index do |commit, i|
          if word =~ swear
             wordStats[word] += 1
             authorStats[author][word] += 1
+            if options['--debug']
+               puts '-'*80
+               puts author
+               puts commit.message
+               puts '-'*80
+            end
          end
       end
    end
