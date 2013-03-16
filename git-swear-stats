@@ -53,6 +53,9 @@ log.each_with_index do |commit, i|
    print '.' if i % 100 == 0
 end
 
+# People who haven't sworn at all aren't very interesting.
+authorStats.delete_if {|author, swears| swears.empty?}
+
 puts
 pp wordStats
 pp authorStats
