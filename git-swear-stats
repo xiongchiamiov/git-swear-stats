@@ -98,6 +98,19 @@ puts if not options['--no-progress']
 # People who haven't sworn at all aren't very interesting.
 authorStats.delete_if {|author, swears| swears.empty?}
 
-pp wordStats
-pp authorStats
+pp wordStats if options['--debug']
+pp authorStats if options['--debug']
+
+puts 'Overall:'
+# Sort by -value to reverse the sort to high->low.
+wordStats.sort_by {|key, value| -value}.each do |tuple|
+   puts "   #{tuple[0]}: #{tuple[1]}"
+end
+puts 'Authors:'
+authorStats.each do |author, words|
+   puts "   #{author}:"
+   words.sort_by {|key, value| -value}.each do |tuple|
+      puts "      #{tuple[0]}: #{tuple[1]}"
+   end
+end
 
