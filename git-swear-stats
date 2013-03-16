@@ -22,22 +22,23 @@ swears = [
    %r{^hell(ish)?$},
 ]
 
-stats = {}
-stats.default = 0
+wordStats = {}
+wordStats.default = 0
+authorStats = {}
 
 repo = Git.open '.'
 repo.log.each do |commit|
    author = commit.author.name
-   if not stats.key? author
-      stats[author] = {}
-      stats[author].default = 0
+   if not authorStats.key? author
+      authorStats[author] = {}
+      authorStats[author].default = 0
    end
    commit.message.split(%r{[ \-_.,!?;:*"'\n]}).each do |word|
       word.downcase!
       swears.each do |swear|
          if word =~ swear
-            stats[word] += 1
-            stats[author][word] += 1
+            wordStats[word] += 1
+            authorStats[author][word] += 1
          end
       end
    end
@@ -45,5 +46,6 @@ repo.log.each do |commit|
 end
 
 puts
-pp stats
+pp wordStats
+pp authorStats
 
