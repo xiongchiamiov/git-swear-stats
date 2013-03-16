@@ -21,6 +21,7 @@ Options:
    -h, --help        Show this screen.
    --debug           Print out debug messages.
    --include-merges  Look at merge commits.
+   --no-progress     Don't print out progress information.
 
 DOCOPT
 begin
@@ -53,11 +54,11 @@ repo = Git.open '.'
 # By default, we only get up to 30 commits in the log.  By digging through the
 # source, I found that passing nil to repo.log() ends up setting the limit to
 # nil, and thus giving us all commits.
-print 'Reading in git log... '
+print 'Reading in git log... ' if not options['--no-progress']
 log = repo.log nil
-puts 'done!'
+puts 'done!' if not options['--no-progress']
 
-print 'Parsing commit messages'
+print 'Parsing commit messages' if not options['--no-progress']
 log.each_with_index do |commit, i|
    # Merges often have data in them from other commits, pull request
    # descriptions, etc., so it's not really fair to count them.
@@ -90,13 +91,13 @@ log.each_with_index do |commit, i|
    end
    # For large repos, parsing can take a while; let users know something is
    # happening.
-   print '.' if i % 100 == 0
+   print '.' if i % 100 == 0 and not options['--no-progress']
 end
+puts if not options['--no-progress']
 
 # People who haven't sworn at all aren't very interesting.
 authorStats.delete_if {|author, swears| swears.empty?}
 
-puts
 pp wordStats
 pp authorStats
 
