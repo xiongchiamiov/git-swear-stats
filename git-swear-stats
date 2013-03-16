@@ -34,7 +34,7 @@ pp options if options['--debug']
 
 swears = [
    %r{^(dip)?shit(ty)?$},
-   %r{^(mother)?(fuck|fsck|eff)(ing|er|ed|head)?$},
+   %r{^(cluster|mother)?(fuck|fsck|eff)(ing|er|ed|head)?$},
    %r{^cunt$},
    %r{^cock(suck|sucker)?$},
    %r{^(ass|arse)(hole)?$},
