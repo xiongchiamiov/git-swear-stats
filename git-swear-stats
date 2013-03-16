@@ -107,7 +107,9 @@ wordStats.sort_by {|key, value| -value}.each do |tuple|
    puts "   #{tuple[0]}: #{tuple[1]}"
 end
 puts 'Authors:'
-authorStats.each do |author, words|
+# Sort authors by the total number of swears to their name.
+authorStats.sort_by {|author, words| -(words.values.reduce :+)}.each do |tuple|
+   author, words = tuple
    puts "   #{author}:"
    words.sort_by {|key, value| -value}.each do |tuple|
       puts "      #{tuple[0]}: #{tuple[1]}"
