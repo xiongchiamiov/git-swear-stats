@@ -41,8 +41,10 @@ log.each_with_index do |commit, i|
       authorStats[author] = {}
       authorStats[author].default = 0
    end
+   
+   # Splitting on words makes our regexes a little simpler.
    commit.message.split(%r{[ \-_.,!?;:*"'\n]}).each do |word|
-      word.downcase!
+      word.downcase! # A little bit of normalization.
       swears.each do |swear|
          if word =~ swear
             wordStats[word] += 1
@@ -50,6 +52,8 @@ log.each_with_index do |commit, i|
          end
       end
    end
+   # For large repos, parsing can take a while; let users know something is
+   # happening.
    print '.' if i % 100 == 0
 end
 
