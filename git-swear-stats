@@ -18,9 +18,9 @@ Usage:
    git-swear-stats [options]
 
 Options:
-   -h, --help   Show this screen.
-   --debug      Print out debug messages.
-   --no-merges  Don't look at merge commits.
+   -h, --help        Show this screen.
+   --debug           Print out debug messages.
+   --include-merges  Look at merge commits.
 
 DOCOPT
 begin
@@ -64,7 +64,7 @@ log.each_with_index do |commit, i|
    # Git::Log unfortunately appears to have no way of passing --no-merges
    # through to the underlying binary, so we have to check merges on a
    # commit-by-commit basis instead.
-   next if options['--no-merges'] and commit.parents.count > 1
+   next if not options['--include-merges'] and commit.parents.count > 1
    
    author = commit.author.name
    if not authorStats.key? author
