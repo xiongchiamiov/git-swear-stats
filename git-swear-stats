@@ -9,17 +9,17 @@ require 'git'
 require 'pp'
 
 swears = [
-   %r{(dip)?shit(ty)?},
-   %r{(mother)?(fuck|fsck|eff)(ing|er|ed|head)?},
-   %r{cunt},
-   %r{cock(suck|sucker)?},
-   %r{(ass|arse)(hole)?},
-   %r{bitch(y)?},
-   %r{wtf},
-   %r{fag(got)?},
-   %r{(god)?damn(ed|able)?},
-   %r{bastard},
-   %r{hell(ish)?},
+   %r{^(dip)?shit(ty)?$},
+   %r{^(mother)?(fuck|fsck|eff)(ing|er|ed|head)?$},
+   %r{^cunt$},
+   %r{^cock(suck|sucker)?$},
+   %r{^(ass|arse)(hole)?$},
+   %r{^bitch(y)?$},
+   %r{^wtf$},
+   %r{^fag(got)?$},
+   %r{^(god)?damn(ed|able)?$},
+   %r{^bastard$},
+   %r{^hell(ish)?$},
 ]
 
 stats = {}
