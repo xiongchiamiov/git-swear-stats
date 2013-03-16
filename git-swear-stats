@@ -1,0 +1,49 @@
+#!/usr/bin/env ruby
+# encoding: utf-8
+
+# May you recognize your weaknesses and share your strengths.
+# May you share freely, never taking more than you give.
+# May you find love and love everyone you find.
+
+require 'git'
+require 'pp'
+
+swears = [
+   %r{(dip)?shit(ty)?},
+   %r{(mother)?(fuck|fsck|eff)(ing|er|ed|head)?},
+   %r{cunt},
+   %r{cock(suck|sucker)?},
+   %r{(ass|arse)(hole)?},
+   %r{bitch(y)?},
+   %r{wtf},
+   %r{fag(got)?},
+   %r{(god)?damn(ed|able)?},
+   %r{bastard},
+   %r{hell(ish)?},
+]
+
+stats = {}
+stats.default = 0
+
+repo = Git.open '.'
+repo.log.each do |commit|
+   author = commit.author.name
+   if not stats.key? author
+      stats[author] = {}
+      stats[author].default = 0
+   end
+   commit.message.split(%r{[ \-_.,!?;:*"'\n]}).each do |word|
+      word.downcase!
+      swears.each do |swear|
+         if word =~ swear
+            stats[word] += 1
+            stats[author][word] += 1
+         end
+      end
+   end
+   print '.'
+end
+
+puts
+pp stats
+
