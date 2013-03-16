@@ -27,7 +27,13 @@ wordStats.default = 0
 authorStats = {}
 
 repo = Git.open '.'
-repo.log.each do |commit|
+# By default, we only get up to 30 commits in the log.  By digging through the
+# source, I found that passing nil to repo.log() ends up setting the limit to
+# nil, and thus giving us all commits.
+print 'Reading in git log... '
+log = repo.log nil
+puts 'done!'
+log.each do |commit|
    author = commit.author.name
    if not authorStats.key? author
       authorStats[author] = {}
