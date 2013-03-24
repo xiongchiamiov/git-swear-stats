@@ -100,7 +100,7 @@ log.each_with_index do |commit, i|
       # TODO: Monkeypatch the shit out of Git::Commit.
       next if commit.parents.count == 0
       
-      diff = commit.diff_parent.to_s
+      diff = commit.diff_parent.to_s.force_encoding 'iso-8859-1'
       # We only want to look at stuff they did, not surrounding things.  We'll
       # approximate this by grepping through lines "added".
       lines = diff.split("\n")
