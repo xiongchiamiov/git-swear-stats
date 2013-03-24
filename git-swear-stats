@@ -8,6 +8,7 @@
 require 'docopt'
 require 'git'
 require 'pp'
+require 'terminal-table'
 
 # Git intercepts `git swear-stats --help`, so unfortunately most people won't
 # see this usage message.  Docopt is still a great way to do parsing, though.
@@ -136,17 +137,19 @@ pp wordStats if options['--debug']
 pp authorStats if options['--debug']
 
 puts 'Overall:'
-# Sort by -value to reverse the sort to high->low.
-wordStats.sort_by {|key, value| -value}.each do |tuple|
-   puts "   #{tuple[0]}: #{tuple[1]}"
-end
+table = Terminal::Table.new
+table.headings = wordStats.keys
+table.add_row wordStats.values
+puts table
+
 puts 'Authors:'
-# Sort authors by the total number of swears to their name.
-authorStats.sort_by {|author, words| -(words.values.reduce :+)}.each do |tuple|
-   author, words = tuple
-   puts "   #{author}:"
-   words.sort_by {|key, value| -value}.each do |tuple|
-      puts "      #{tuple[0]}: #{tuple[1]}"
-   end
+table = Terminal::Table.new
+table.headings = header = [''] + wordStats.keys
+authorStats.each do |author, stats|
+   row = []
+   stats[''] = author # Cheat a little for the first column.
+   header.each {|swear| row << stats[swear]}
+   table.add_row row
 end
+puts table
 
