@@ -25,7 +25,7 @@ git repository's commit messages.
 
 # Example Output
 
-    [$]> git swear-stats 
+    [$]> git-swear-stats 
     Reading in git log... done!
     Parsing git log.
     Overall:
