@@ -34,16 +34,16 @@ end
 pp options if options['--debug']
 
 swears = [
-   %r{^(dip)?shit(ty)?$},
-   %r{^(cluster|mother)?(fuck|fsck|eff)(ing|er|ed|head)?$},
-   %r{^cunt$},
-   %r{^cock(suck|sucker)?$},
-   %r{^(ass|arse)(hole)?$},
-   %r{^bitch(y)?$},
+   %r{^(dip)?shit(ty)?(s)?$},
+   %r{^(cluster|mother)?(fuck|fsck|eff)(ing|er|ed|head)(s)??$},
+   %r{^cunt(s)?$},
+   %r{^cock(suck|sucker)?(s)?$},
+   %r{^(ass|arse)(hole)?(s)?$},
+   %r{^bitch(y|es)?$},
    %r{^wtf$},
-   %r{^fag(got)?$},
+   %r{^fag(got)?(s)?$},
    %r{^(god)?damn(ed|able)?$},
-   %r{^bastard$},
+   %r{^bastard(s)?$},
    %r{^hell(ish)?$},
 ]
 wordDelimiters = %r{[ \-_.,!?;:*"'|{}()\n]}
