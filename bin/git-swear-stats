@@ -139,18 +139,19 @@ authorStats.delete_if {|author, swears| swears.empty?}
 pp wordStats if options['--debug']
 pp authorStats if options['--debug']
 
-words = wordStats.keys
+words = wordStats.sort {|a, b| b[1] <=> a[1]}.map {|kv| kv[0]}
 
 puts 'Overall:'
 table = Terminal::Table.new
 table.headings = words
-table.add_row wordStats.values
+table.add_row words.map {|word| wordStats[word]}
 puts table
 
 puts 'Authors:'
 table = Terminal::Table.new
 table.headings = ['', 'total'] + words
-authorStats.each do |author, stats|
+sorted_stats = authorStats.sort {|a, b| b[1][:total] <=> a[1][:total]}
+sorted_stats.each do |author, stats|
    table.add_row [ author, stats[:total] ] + words.map {|swear| stats[swear]}
 end
 puts table
