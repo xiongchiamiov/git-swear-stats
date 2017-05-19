@@ -33,19 +33,20 @@ rescue Docopt::Exit => e
 end
 pp options if options['--debug']
 
-swears = [
-   %r{^(dip)?shit(ty)?$},
-   %r{^(cluster|mother)?(fuck|fsck|eff)(ing|er|ed|head)?$},
-   %r{^cunt$},
-   %r{^cock(suck|sucker)?$},
-   %r{^(ass|arse)(hole)?$},
-   %r{^bitch(y)?$},
-   %r{^wtf$},
-   %r{^fag(got)?$},
-   %r{^(god)?damn(ed|able)?$},
-   %r{^bastard$},
-   %r{^hell(ish)?$},
-]
+swears = {
+   'shit' => %r{^(dip)?shit(ty)?$},
+   'fuck' => %r{^(cluster|mother)?(fuck|fsck|eff)(ing|er|ed|head)?$},
+   'cunt' => %r{^cunt$},
+   'cock' => %r{^cock(suck|sucker)?$},
+   'ass' => %r{^(ass|arse)(hole)?$},
+   'bitch' => %r{^bitch(y)?$},
+   'wtf' => %r{^wtf$},
+   'faggot' => %r{^fag(got)?$},
+   'damn' => %r{^(god)?dam[nm](ed|able|it)?$},
+   'bastard' => %r{^bastard$},
+   'hell' => %r{^hell(ish)?$},
+   'wank' => %r{^wank(er|ing)?$},
+}
 wordDelimiters = %r{[ \-_.,!?;:*"'|{}()\n]}
 
 wordStats = {}
@@ -79,10 +80,10 @@ log.each_with_index do |commit, i|
       # Splitting on words makes our regexes a little simpler.
       commit.message.split(wordDelimiters).each do |word|
          word.downcase! # A little bit of normalization.
-         swears.each do |swear|
-            if word =~ swear
-               wordStats[word] += 1
-               authorStats[author][word] += 1
+         swears.each do |swear, swear_re|
+            if word =~ swear_re
+               wordStats[swear] += 1
+               authorStats[author][swear] += 1
                if options['--debug']
                   puts '-'*80
                   puts author
@@ -108,10 +109,10 @@ log.each_with_index do |commit, i|
       lines.drop(4).keep_if {|line| line =~ /^\+/}.each do |line|
          line[1..-1].split(wordDelimiters).each do |word|
             word.downcase! # A little bit of normalization.
-            swears.each do |swear|
-               if word =~ swear
-                  wordStats[word] += 1
-                  authorStats[author][word] += 1
+            swears.each do |swear, swear_re|
+               if word =~ swear_re
+                  wordStats[swear] += 1
+                  authorStats[author][swear] += 1
                   if options['--debug']
                      puts '-'*80
                      puts author
