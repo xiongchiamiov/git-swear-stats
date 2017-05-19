@@ -84,6 +84,7 @@ log.each_with_index do |commit, i|
             if word =~ swear_re
                wordStats[swear] += 1
                authorStats[author][swear] += 1
+               authorStats[author][:total] += 1
                if options['--debug']
                   puts '-'*80
                   puts author
@@ -113,6 +114,7 @@ log.each_with_index do |commit, i|
                if word =~ swear_re
                   wordStats[swear] += 1
                   authorStats[author][swear] += 1
+                  authorStats[author][:total] += 1
                   if options['--debug']
                      puts '-'*80
                      puts author
@@ -137,20 +139,19 @@ authorStats.delete_if {|author, swears| swears.empty?}
 pp wordStats if options['--debug']
 pp authorStats if options['--debug']
 
+words = wordStats.keys
+
 puts 'Overall:'
 table = Terminal::Table.new
-table.headings = wordStats.keys
+table.headings = words
 table.add_row wordStats.values
 puts table
 
 puts 'Authors:'
 table = Terminal::Table.new
-table.headings = header = [''] + wordStats.keys
+table.headings = ['', 'total'] + words
 authorStats.each do |author, stats|
-   row = []
-   stats[''] = author # Cheat a little for the first column.
-   header.each {|swear| row << stats[swear]}
-   table.add_row row
+   table.add_row [ author, stats[:total] ] + words.map {|swear| stats[swear]}
 end
 puts table
 
