@@ -34,20 +34,19 @@ end
 pp options if options['--debug']
 
 swears = {
-   'shit' => %r{^(dip)?shit(ty)?$},
-   'fuck' => %r{^(cluster|mother)?(fuck|fsck|eff)(ing|er|ed|head)?$},
-   'cunt' => %r{^cunt$},
-   'cock' => %r{^cock(suck|sucker)?$},
-   'ass' => %r{^(ass|arse)(hole)?$},
-   'bitch' => %r{^bitch(y)?$},
-   'wtf' => %r{^wtf$},
-   'faggot' => %r{^fag(got)?$},
-   'damn' => %r{^(god)?dam[nm](ed|able|it)?$},
-   'bastard' => %r{^bastard$},
-   'hell' => %r{^hell(ish)?$},
-   'wank' => %r{^wank(er|ing)?$},
-}
-wordDelimiters = %r{[ \-_.,!?;:*"'|{}()\n]}
+   'shit' => %r{(dip)?shit(ty)?},
+   'fuck' => %r{(cluster|mother)?(fuck|fsck|eff)(ing|er|ed|head)?},
+   'cunt' => %r{cunt},
+   'cock' => %r{cock(suck|sucker)?},
+   'ass' => %r{(ass|arse)(hole)?},
+   'bitch' => %r{bitch(y)?},
+   'wtf' => %r{wtf},
+   'faggot' => %r{fag(got)?},
+   'damn' => %r{(god)?dam[nm](ed|able|it)?},
+   'bastard' => %r{bastard},
+   'hell' => %r{hell(ish)?},
+   'wank' => %r{wank(er|ing)?},
+}.map {|k, v| [k, /\b#{v}\b/i] }.to_h
 
 wordStats = {}
 wordStats.default = 0
@@ -77,20 +76,18 @@ log.each_with_index do |commit, i|
    end
    
    if !options['diffs']
-      # Splitting on words makes our regexes a little simpler.
-      commit.message.split(wordDelimiters).each do |word|
-         word.downcase! # A little bit of normalization.
-         swears.each do |swear, swear_re|
-            if word =~ swear_re
-               wordStats[swear] += 1
-               authorStats[author][swear] += 1
-               authorStats[author][:total] += 1
-               if options['--debug']
-                  puts '-'*80
-                  puts author
-                  puts commit.message
-                  puts '-'*80
-               end
+      swears.each do |swear, swear_re|
+         count = commit.message.scan(swear_re).size
+         if count > 0
+            wordStats[swear] += count
+            authorStats[author][swear] += count
+            authorStats[author][:total] += count
+            if options['--debug']
+               puts '-'*80
+               puts "#{count}x #{swear}"
+               puts author
+               puts commit.message
+               puts '-'*80
             end
          end
       end
@@ -108,19 +105,18 @@ log.each_with_index do |commit, i|
       lines = diff.split("\n")
       # Drop the first four lines to get rid of the diff header.
       lines.drop(4).keep_if {|line| line =~ /^\+/}.each do |line|
-         line[1..-1].split(wordDelimiters).each do |word|
-            word.downcase! # A little bit of normalization.
-            swears.each do |swear, swear_re|
-               if word =~ swear_re
-                  wordStats[swear] += 1
-                  authorStats[author][swear] += 1
-                  authorStats[author][:total] += 1
-                  if options['--debug']
-                     puts '-'*80
-                     puts author
-                     puts line
-                     puts '-'*80
-                  end
+         swears.each do |swear, swear_re|
+            count = line.scan(swear_re).size
+            if count > 0
+               wordStats[swear] += count
+               authorStats[author][swear] += count
+               authorStats[author][:total] += count
+               if options['--debug']
+                  puts '-'*80
+                  puts "#{count}x #{swear}"
+                  puts author
+                  puts line
+                  puts '-'*80
                end
             end
          end
